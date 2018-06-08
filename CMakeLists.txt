@@ -13,13 +13,13 @@ if (NOT NPROC EQUAL 0)
 endif()
 
 
-set(LUA_SIMPLE_ITK_VERSION "0.10-0")
+set(LUA_SIMPLE_ITK_VERSION "1.0-0")
 
 include(ExternalProject)
 
 
 set( SimpleITK_REPOSITORY http://itk.org/SimpleITK.git )
-set(SimpleITK_GIT_TAG v0.10.0)
+set(SimpleITK_GIT_TAG v1.0.0)
 
 set( EP_SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj} )
 set( EP_BINARY_DIR ${CMAKE_BINARY_DIR}/${proj}-build )
@@ -38,6 +38,10 @@ ExternalProject_add( ${proj}-download
   BUILD_COMMAND ""
   )
 
+if ( $ENV{CMAKE_USE_DISTCC} )
+   set(C_LAUNCHER "-DCMAKE_C_COMPILER_LAUNCHER:STRING=distcc")
+   set(CXX_LAUNCHER "-DCMAKE_CXX_COMPILER_LAUNCHER:STRING=distcc")
+endif ()
 
 # The actual SimpleITK Superbuild project that build all the tools
 # needed (GTest, PCRE, Swig, Lua & GTest) and then SimpleITK itself.
@@ -52,15 +56,12 @@ ExternalProject_add( ${proj}
     -DBUILD_EXAMPLES:BOOL=OFF
     -DBUILD_TESTING:BOOL=OFF
     -DBUILD_DOXYGEN:BOOL=OFF
-    -DWRAP_PYTHON:BOOL=OFF
-    -DWRAP_TCL:BOOL=OFF
-    -DWRAP_JAVA:BOOL=OFF
-    -DWRAP_RUBY:BOOL=OFF
+    -DWRAP_DEFAULT:BOOL=OFF
     -DWRAP_LUA:BOOL=ON
-    -DWRAP_CSHARP:BOOL=OFF
-    -DWRAP_R:BOOL=OFF
     -DSimpleITK_BUILD_STRIP:BOOL=ON
     -DSimpleITK_BUILD_DISTRIBUTE:BOOL=ON
+    ${C_LAUNCHER}
+    ${CXX_LAUNCHER}
   INSTALL_COMMAND ""
   DEPENDS ${proj}-download ${${proj}_DEPENDENCIES}
   )
@@ -85,12 +86,6 @@ install( FILES ${SITK_SOURCE_DIR}/LICENSE ${SITK_SOURCE_DIR}/NOTICE ${SITK_SOURC
   DESTINATION ${CMAKE_SOURCE_DIR}/doc
   )
 
-# copy the SimpleDerivative.lua example file from SimpleITK into this directory
-install( FILES ${SITK_SOURCE_DIR}/Examples/Lua/SimpleDerivative.lua
-  DESTINATION ${CMAKE_SOURCE_DIR}/examples
-  )
-
-    
 set(_lib_subdir lib)
 if(WIN32)
   set(_lib_subdir bin)

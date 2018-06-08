@@ -1,11 +1,18 @@
-#!/usr/bin/env lua
+-- This file was automatically generated for the LuaDist project.
+
 
 package = 'simpleitk'
-version = '0.10-0'
-source  = {
-    url    = 'https://github.com/SimpleITK/SimpleITKLuaRock/archive/v0.10.zip',
-    dir = 'SimpleITKLuaRock-0.10',
+version = '1.0-0'
+-- LuaDist source
+source = {
+  tag = "1.0-0",
+  url = "git://github.com/LuaDist-testing/simpleitk.git"
 }
+-- Original source
+-- source  = {
+--     url    = 'https://github.com/SimpleITK/SimpleITKLuaRock/archive/v1.0.zip',
+--     dir = 'SimpleITKLuaRock-1.0',
+-- }
 description = {
     summary  = "A Lua binding to SimpleITK.",
     detailed = '',
